@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+ <item
+     android:id="@+id/online_view"
+     android:title="@string/online"
+      android:icon="@drawable/online_slector"
+     />
+    <item
+        android:id="@+id/offline_view"
+        android:title="@string/offline"
+        android:icon="@drawable/offline_slector"
+        />
+</menu>

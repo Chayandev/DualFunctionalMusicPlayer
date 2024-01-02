@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFFFF</color>
+    <color name="primary">#202151</color>
+    <color name="transparentPrimary">#D0202151</color>
+    <color name="gray">#CDCDCD</color>
+    <color name="transhparent_gray">#8FCDCDCD</color>
+    <color name="lightPrimary">#F33A3B54</color>
+    <color name="secondary">#0c081c</color>
+    <color name="selectedItem">#2443bd</color>
+
+    <color name="uiBg">#0d0920</color>
+    <color name="transparent_uiBg">#CD0D0920</color>
+    <color name="upGrad_700">#3b56e5</color>
+    <color name="downGrad_700">#864cf7</color>
+    <color name="upGrad_500">#362068</color>
+    <color name="downGrad_500">#21256b</color>
+    <color name="upGrad800">#2842CD</color>
+    <color name="downGrad800">#5F26CD</color>
+    <color name="transhparent_mixGrade">#E9332E76</color>
+    <color name="downGradLightTrasparent">#D87B4ED2</color>
+    <color name="upGradLightTrasparent">#D83b56D2</color>
+    <color name="upGrad_brighter">#415EF6</color>
+    <color name="downGrad_brighter">#8B4FFF</color>
+</resources>

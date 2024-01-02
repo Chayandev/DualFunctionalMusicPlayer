@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.PlayingMusicActivity"
+    android:background="@color/uiBg"
+    >
+    <LinearLayout
+        android:id="@+id/image_layout"
+        android:layout_width="330dp"
+        android:layout_height="330dp"
+        android:layout_marginTop="64dp"
+        android:background="@drawable/image"
+        android:elevation="120dp"
+        android:gravity="center"
+        android:outlineAmbientShadowColor="@color/downGrad_700"
+        android:outlineSpotShadowColor="@color/upGrad_700"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="330dp"
+            app:cardBackgroundColor="@color/uiBg"
+            >
+
+            <ImageView
+                android:id="@+id/musicImg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/headphone"
+                android:contentDescription="@string/imageofmusic" />
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/song_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginTop="64dp"
+        android:padding="5dp"
+        android:text="Bonesfgdfsgjkasdghkjhghdfjhgjhdfjghjkdf"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:fontFamily="@font/roboto_medium"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_layout" />
+
+    <ImageView
+        android:id="@+id/addFav"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="18dp"
+        app:layout_goneMarginEnd="18dp"
+        android:padding="3dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/baseline_favorite_border_24"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_layout"
+        android:contentDescription="@string/addfaviorite" />
+
+    <TextView
+        android:id="@+id/singer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto"
+        android:padding="5dp"
+        android:text="Imagine Dragon"
+        android:gravity="start"
+        android:textColor="@color/transhparent_gray"
+        android:textSize="18sp"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:freezesText="true"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/song_title"
+        android:layout_marginStart="18dp"
+        android:layout_marginEnd="18dp"
+        />
+
+    <SeekBar
+        android:id="@+id/seek_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="16dp"
+        android:maxHeight="4dip"
+        android:minHeight="4dip"
+        android:progress="0"
+        android:scaleX="1.05"
+        android:progressDrawable="@drawable/seek_bar_color"
+        android:thumb="@drawable/thumb_clr"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/singer" />
+
+    <TextView
+        android:id="@+id/runTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:paddingTop="8dp"
+        android:text="00:00"
+        android:fontFamily="@font/roboto_medium"
+        android:textColor="@color/transhparent_gray"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/seek_bar" />
+
+    <TextView
+        android:id="@+id/totalTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="22dp"
+        android:paddingTop="8dp"
+        android:text="03:45"
+        android:fontFamily="@font/roboto_medium"
+        android:textColor="@color/transhparent_gray"
+        android:textSize="14sp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/seek_bar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/seek_bar">
+
+        <ImageView
+            android:id="@+id/backward_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="16dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/previous"
+            android:contentDescription="@string/goprevious" />
+
+        <ImageButton
+            android:id="@+id/play_paush_btn"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/pl_ps_btn"
+            android:padding="8dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/baseline_play_arrow_24"
+            android:contentDescription="@string/playpush" />
+
+        <ImageView
+            android:id="@+id/forward_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="16dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/next"
+            android:contentDescription="@string/gonext" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

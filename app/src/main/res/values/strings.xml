@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">CDMusicPlayer</string>
+    <string name="imageofmusic">ImageOfMusic</string>
+    <string name="addfaviorite">AddFaviorite</string>
+    <string name="playpush">PlayPush</string>
+    <string name="goprevious">GoPrevious</string>
+    <string name="gonext">GoNext</string>
+    <string name="playpause">playpause</string>
+    <string name="welcome">Welcome</string>
+    <string name="enjoy_deezer_music_clips">Enjoy Deezer Music Clips</string>
+    <string name="famous_artist">Famous Artist</string>
+    <string name="allen_walker">Allen Walker</string>
+    <string name="musicicon">musicIcon</string>
+    <string name="offline">Offline</string>
+    <string name="online">Online</string>
+    <string name="songs">Songs</string>
+    <string name="artistpicture">artistPicture</string>
+    <string name="back">back</string>
+    <string name="ooops">Ooops!</string>
+    <string name="no_internet_connection_found_check_your_connection">No internet Connection!\nCheck your connection</string>
+    <string name="try_again">Try Again</string>
+</resources>

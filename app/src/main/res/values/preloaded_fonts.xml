@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/aclonica</item>
+        <item>@font/aguafina_script</item>
+        <item>@font/allan_bold</item>
+        <item>@font/amarante</item>
+        <item>@font/amethysta</item>
+        <item>@font/audiowide</item>
+        <item>@font/beth_ellen</item>
+        <item>@font/bungee_shade</item>
+        <item>@font/new_rocker</item>
+        <item>@font/roboto</item>
+        <item>@font/roboto_medium</item>
+        <item>@font/roboto_thin</item>
+        <item>@font/sonsie_one</item>
+        <item>@font/spicy_rice</item>
+        <item>@font/trade_winds</item>
+        <item>@font/vast_shadow</item>
+        <item>@font/vollkorn_sc</item>
+        <item>@font/warnes</item>
+    </array>
+</resources>
