@@ -1,1 +1,1 @@
-# DualFunctionalMusicPlayer
+# DualModeMusicPlayer
