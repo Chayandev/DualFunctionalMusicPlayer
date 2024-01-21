@@ -7,9 +7,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cdmusicplayer.ApiData.Data
 import com.example.cdmusicplayer.R
-import com.example.cdmusicplayer.data.FamousArtistData
+import com.example.cdmusicplayer.model.FamousArtistData
 import com.squareup.picasso.Picasso
 
 class FamousArtistAdapter(
@@ -43,9 +42,9 @@ class FamousArtistAdapter(
         holder.artistName.text=gridItem.name
         Picasso.get().load(gridItem.picture).into(holder.picture)
 
-        holder.itemView.setOnClickListener {
-            onItemClick(position)
-        }
+//        holder.itemView.setOnClickListener {
+//            onItemClick(position)
+//        }
     }
 
 

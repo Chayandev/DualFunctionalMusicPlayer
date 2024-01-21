@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
-import com.example.cdmusicplayer.ApiData.Data
+import com.example.cdmusicplayer.model.ApiData.Data
 import com.example.cdmusicplayer.R
 import com.squareup.picasso.Picasso
 
@@ -30,7 +30,6 @@ class MusicAdapter(
     }
 
     override fun getItemCount(): Int {
-        Log.d("Tag:Total Song Count","${dataList.size}")
         return dataList.size
 
     }
@@ -45,7 +44,12 @@ class MusicAdapter(
         holder.artistName.text = currentData.artist.name
         holder.artistName.setHorizontallyScrolling(true)
         holder.artistName.isSelected=true
-        Picasso.get().load(currentData.album.cover_big).into(holder.musicImage)
+        if(currentData.album.cover_big!=null) {
+            Picasso.get().load(currentData.album.cover_big).error(R.drawable.headphone)
+                .into(holder.musicImage)
+        }else{
+            holder.musicImage.setImageResource(R.drawable.headphone)
+        }
 
         // Set background based on the selected position
 

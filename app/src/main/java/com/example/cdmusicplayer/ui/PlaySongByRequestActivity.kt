@@ -1,29 +1,33 @@
 package com.example.cdmusicplayer.ui
 
+import android.content.ComponentName
 import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cdmusicplayer.ApiData.Data
+import com.example.cdmusicplayer.model.ApiData.Data
 import com.example.cdmusicplayer.R
 import com.example.cdmusicplayer.adapter.MusicAdapter
-import com.example.cdmusicplayer.data.ApiInterface
-import com.example.cdmusicplayer.data.MediaPlayerManager
-import com.example.cdmusicplayer.data.MyApplication
-import com.example.cdmusicplayer.data.MyData
+import com.example.cdmusicplayer.repository.ApiServices
+import com.example.cdmusicplayer.utils.MediaPlayerManager
+import com.example.cdmusicplayer.utils.MyApplication
+import com.example.cdmusicplayer.model.MyData
 import com.example.cdmusicplayer.databinding.ActivityPlaysongByRequestBinding
+import com.example.cdmusicplayer.utils.MusicService
 import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,8 +35,8 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class PlaySongByRequestActivity : AppCompatActivity() {
-
+class PlaySongByRequestActivity : AppCompatActivity(),ServiceConnection {
+    /*
     private lateinit var binding: ActivityPlaysongByRequestBinding
     private lateinit var musicAdapter: MusicAdapter
     private var handler: Handler = Handler(Looper.getMainLooper())
@@ -43,16 +47,18 @@ class PlaySongByRequestActivity : AppCompatActivity() {
     private lateinit var receivedQuery: String
     private lateinit var uiFlag: String
     private var flag = false
+    private var musicService:MusicService?=null
     private val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             // Your custom logic here
-            mediaPlayerManager.releaseMediaPlayer()
+          //  mediaPlayerManager.releaseMediaPlayer()
+         MyApplication.prevActivity="PlaySongByRequestActivity"
             finish()
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
 
 // Make the activity full screen
@@ -69,10 +75,14 @@ class PlaySongByRequestActivity : AppCompatActivity() {
         uiFlag = intent.getStringExtra("FLAG").toString()
         //checkMediaPlayingAndSetUpBottomUi()
         // Initialize the MediaPlayer in the MediaPlayerManager singleton
-        mediaPlayerManagerInitialize()
+      //  mediaPlayerManagerInitialize()
         buildRetrofit()
         // Example: Toggle visibility of PlayingBottomLL
         togglePlayingBottomLLVisibility()
+        //starting service
+        val intent = Intent(this, MusicService::class.java)
+        bindService(intent, this@PlaySongByRequestActivity, BIND_AUTO_CREATE)
+        startService(intent)
 
         binding.playPauseBtn.setOnClickListener() {
             setUpTheOnImagePlayPauseBtn()
@@ -86,6 +96,7 @@ class PlaySongByRequestActivity : AppCompatActivity() {
         );
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun setUpTheOnImagePlayPauseBtn() {
         Log.d("Tag:OnImagePlPsBtn", "In the FUnction call")
         if (flag && mediaPlayerManager.mediaPlayer != null) {
@@ -129,16 +140,18 @@ class PlaySongByRequestActivity : AppCompatActivity() {
             .baseUrl("https://deezerdevs-deezer.p.rapidapi.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(ApiInterface::class.java)
+            .create(ApiServices::class.java)
         searchGetAndDisplayDatA(retrofitBuilder, receivedQuery)
     }
 
-    private fun searchGetAndDisplayDatA(retrofitBuilder: ApiInterface, query: String) {
+    private fun searchGetAndDisplayDatA(retrofitBuilder: ApiServices, query: String) {
         val retrofitData = retrofitBuilder.getData(query)
         showLoading() // Show loading indicator before making the API call
         retrofitData.enqueue(object : Callback<MyData?> {
+            @RequiresApi(Build.VERSION_CODES.Q)
             override fun onResponse(call: Call<MyData?>, response: Response<MyData?>) {
                 dataList = response.body()?.data!!
+                (application as MyApplication).songFromWhichActivity="PlaySongByRequestActivity"
                 if (uiFlag == "A") {
                     setUpUiA(dataList[1].artist.name, dataList[1].artist.picture_big)
                 } else {
@@ -150,7 +163,6 @@ class PlaySongByRequestActivity : AppCompatActivity() {
                 musicAdapter =
                     MusicAdapter(this@PlaySongByRequestActivity, dataList) { position, dataList ->
                         // Handle item click here
-
                         val selectedMusic = dataList[position]
                         playSong(dataList, position)
                     }
@@ -171,6 +183,7 @@ class PlaySongByRequestActivity : AppCompatActivity() {
         })
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun playSong(dataList: List<Data>, position: Int) {
         // Set or get shared data in MainActivity
         (application as MyApplication).selectedPosition = position
@@ -203,11 +216,18 @@ class PlaySongByRequestActivity : AppCompatActivity() {
         Picasso.get().load(pictureBig).into(binding.artistImg)
     }
 
-    private fun mediaPlayerManagerInitialize() {
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun mediaPlayerManagerInitialize(selectedSong: Data) {
         mediaPlayerManager = MediaPlayerManager.getInstance()
         mediaPlayerManager.initializeMediaPlayer()
+        mediaPlayerManager.mediaPlayer?.setDataSource(this, selectedSong.preview.toUri())
+        mediaPlayerManager.mediaPlayer?.prepareAsync()
+        mediaPlayerManager.mediaPlayer?.setOnCompletionListener {
+            playNextSong()
+        }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun updateUiOfBottomPlayer() {
         binding.playerBottomLL.visibility = View.VISIBLE
         selectedPos = (application as MyApplication).selectedPosition
@@ -223,10 +243,11 @@ class PlaySongByRequestActivity : AppCompatActivity() {
         if (mediaPlayerManager.mediaPlayer != null && mediaPlayerManager.mediaPlayer!!.isPlaying) {
             mediaPlayerManager.releaseMediaPlayer()
         }
+        mediaPlayerManagerInitialize(selectedSong)
         //  val mediaPlayerManager = MediaPlayerManager.getInstance()
-        mediaPlayerManager.initializeMediaPlayer()
-        mediaPlayerManager.mediaPlayer?.setDataSource(this, selectedSong.preview.toUri())
-        mediaPlayerManager.mediaPlayer?.prepareAsync()
+//        mediaPlayerManager.initializeMediaPlayer()
+//        mediaPlayerManager.mediaPlayer?.setDataSource(this, selectedSong.preview.toUri())
+//        mediaPlayerManager.mediaPlayer?.prepareAsync()
         Log.d("Tag:UpdateBottomUi after setMusic", "Hello bottom middle")
         setUpSeekBar()
         updateSeekBarProgress()
@@ -234,12 +255,14 @@ class PlaySongByRequestActivity : AppCompatActivity() {
 
         binding.playerBottomLL.setOnClickListener {
             //musicAdapter.setSelectedPosition(position) r
-            val intent = Intent(this@PlaySongByRequestActivity, PlayingMusicActivity::class.java)
+         //     val intent = Intent(this@PlaySongByRequestActivity, PlayingMusicActivity::class.java)
             startActivity(intent)
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun setMusicDetails(selectedSong: Data) {
+        musicService?.showNotification()
         binding.musicTitle.text = selectedSong.title
         binding.artistName.text = selectedSong.artist.name
         Log.d("Tag_artistName in bottom LL", selectedSong.artist.name)
@@ -269,9 +292,9 @@ class PlaySongByRequestActivity : AppCompatActivity() {
                 handler.postDelayed(this, 10)
             }
         }, 0)
-        mediaPlayerManager.mediaPlayer?.setOnCompletionListener {
-            playNextSong()
-        }
+//        mediaPlayerManager.mediaPlayer?.setOnCompletionListener {
+//            playNextSong()
+//        }
     }
 
     private fun setUpPlayPauseButton() {
@@ -285,6 +308,7 @@ class PlaySongByRequestActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun playNextSong() {
         if (selectedPos != -1 && selectedPos < songList.size - 1) {
             mediaPlayerManager.releaseMediaPlayer()
@@ -322,6 +346,7 @@ class PlaySongByRequestActivity : AppCompatActivity() {
         binding.playPauseBtn.setImageResource(R.drawable.baseline_play_arrow_24)
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onResume() {
         super.onResume()
         if (::musicAdapter.isInitialized) {
@@ -335,6 +360,7 @@ class PlaySongByRequestActivity : AppCompatActivity() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun updateActivityResumeData() {
         // val mediaPlayerManager = MediaPlayerManager.getInstance()
         binding.playerBottomLL.visibility = View.VISIBLE
@@ -362,7 +388,25 @@ class PlaySongByRequestActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayerManager.releaseMediaPlayer()
+     //   mediaPlayerManager.releaseMediaPlayer()
         handler.removeCallbacksAndMessages(null)
     }
+
+    override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+        val binder = service as MusicService.MyBinder
+        musicService = binder.currentService()
+    }
+
+    override fun onServiceDisconnected(name: ComponentName?) {
+        musicService=null
+    }
+    */
+    override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+       //
+    }
+
+    override fun onServiceDisconnected(name: ComponentName?) {
+       //
+    }
+
 }

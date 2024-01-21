@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/onlineMusicHomeFragment">
+
+    <fragment
+        android:id="@+id/onlineMusicHomeFragment"
+        android:name="com.example.cdmusicplayer.ui.fragments.OnlineMusicHomeFragment"
+        android:label="fragment_online_music_home"
+        tools:layout="@layout/fragment_online_music_home" >
+        <action
+            android:id="@+id/action_onlineMusicHomeFragment_to_offlineMusicHomeFragment"
+            app:destination="@id/offlineMusicHomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/offlineMusicHomeFragment"
+        android:name="com.example.cdmusicplayer.ui.fragments.OfflineMusicHomeFragment"
+        android:label="fragment_offline_music_home"
+        tools:layout="@layout/fragment_offline_music_home" >
+        <action
+            android:id="@+id/action_offlineMusicHomeFragment_to_onlineMusicHomeFragment"
+            app:destination="@id/onlineMusicHomeFragment" />
+    </fragment>
+</navigation>

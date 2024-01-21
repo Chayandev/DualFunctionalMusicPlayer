@@ -3,9 +3,20 @@
     <style name="Base.Theme.CDMusicPlayer" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+     <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+    <style name="ArtistActivityTheme" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+    <style name="BottomNavigationActiveIndicator" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="elevationOverlayEnabled">true</item>
+    </style>
+    <style name="ThemeOverlay.CDMusicPlayer.FullscreenContainer" parent="">
+        <item name="fullscreenBackgroundColor">@color/light_blue_600</item>
+        <item name="fullscreenTextColor">@color/light_blue_A200</item>
     </style>
 
-    <style name="Theme.CDMusicPlayer" parent="Base.Theme.CDMusicPlayer" />
+
 </resources>

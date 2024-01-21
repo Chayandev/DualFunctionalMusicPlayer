@@ -17,8 +17,15 @@
     <item name="android:textColorHint">@color/transhparent_gray</item>
         <item name="colorControlActivated">@color/gray</item>
     </style>
-    <style name="BottomNavigationActiveIndicator" parent="Widget.MaterialComponents.BottomNavigationView">
-        <item name="android:background">@android:color/transparent</item>
+    <style name="Widget.Base.Theme.CDMusicPlayer.ButtonBar.Fullscreen" parent="">
+        <item name="android:background">@color/black_overlay</item>
+        <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
     </style>
-
+    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.BottomSheetDialog">
+        <item name="enableEdgeToEdge">false</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustNothing</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
 </resources>
