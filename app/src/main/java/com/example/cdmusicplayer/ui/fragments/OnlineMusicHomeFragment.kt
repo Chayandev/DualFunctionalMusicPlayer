@@ -41,19 +41,12 @@ import com.example.cdmusicplayer.utils.FamousArtistDataManager
 import com.example.cdmusicplayer.utils.MediaPlayerManager
 import com.example.cdmusicplayer.utils.MusicService
 import com.example.cdmusicplayer.utils.MyApplication
-import com.example.cdmusicplayer.utils.NotificationReceiver
 import com.example.cdmusicplayer.viewmodel.MusicViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import java.lang.Exception
-
-/**
- * A simple [Fragment] subclass.
- * Use the [OnlineMusicHomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class OnlineMusicHomeFragment private constructor() : Fragment(), ServiceConnection,
     PlayingMusicBottomSheetFragment.BottomSheetDismissListener {
     companion object {
@@ -66,7 +59,6 @@ class OnlineMusicHomeFragment private constructor() : Fragment(), ServiceConnect
             }
             return instance!!
         }
-
         fun releaseInstance() {
             instance = null
         }
@@ -76,7 +68,6 @@ class OnlineMusicHomeFragment private constructor() : Fragment(), ServiceConnect
     private lateinit var musicAdapter: MusicAdapter
     private lateinit var famousArtistAdapter: FamousArtistAdapter
     var handler: Handler = Handler(Looper.getMainLooper())
-    private var selectedPos: Int = -1
     private lateinit var songList: List<Data>
     lateinit var mediaPlayerManager: MediaPlayerManager
     private var musicService: MusicService? = null
@@ -244,7 +235,7 @@ class OnlineMusicHomeFragment private constructor() : Fragment(), ServiceConnect
                 // Set or get shared data in MainActivity
                 MyApplication.selectedPosition = position
                 MyApplication.dataList = dataList
-                //playing song on the bottom palyer
+                //playing song on the bottom player
                 updateUiOfBottomPlayer()
                 // Inside your MainActivity
                 setMusicAdapterView()
@@ -260,11 +251,11 @@ class OnlineMusicHomeFragment private constructor() : Fragment(), ServiceConnect
     }
 
     private fun showSnackBar() {
-        val snackbar = Snackbar.make(
+        val snackBar = Snackbar.make(
             binding.homeOnlineFrgment, "No internet",
             Snackbar.LENGTH_SHORT
         ).setAction("Action", null)
-        snackbar.show()
+        snackBar.show()
     }
 
 
@@ -315,7 +306,7 @@ class OnlineMusicHomeFragment private constructor() : Fragment(), ServiceConnect
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun updateUiOfBottomPlayer() {
 //        playerBottomLL.visibility = View.VISIBLE
-        selectedPos = MyApplication.selectedPosition
+        val selectedPos = MyApplication.selectedPosition
         songList = MyApplication.dataList
         val selectedSong = songList[selectedPos]
 
@@ -353,16 +344,18 @@ class OnlineMusicHomeFragment private constructor() : Fragment(), ServiceConnect
         )
         mediaPlayerManager.mediaPlayer?.prepareAsync()
         mediaPlayerManager.mediaPlayer!!.setOnCompletionListener {
-            playNextSong(selectedPos)
+            playNextSong(++MyApplication.selectedPosition)
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    fun playNextSong(currentPosition: Int) {
+    fun playNextSong(position: Int) {
+        Log.d("OnlineMusicHome","current position $position")
         songList = MyApplication.dataList
-        if (currentPosition >= 0 && currentPosition < songList.size - 1) {
+        if (position >= 0 && position < songList.size - 1) {
             mediaPlayerManager.releaseMediaPlayer()
-            MyApplication.selectedPosition += 1
+           // MyApplication.selectedPosition += 1
+            Log.d("OnlineMusicHome","updated position ${MyApplication.selectedPosition}")
             setMusicAdapterView()
             updateUiOfBottomPlayer()
         } else {
@@ -433,6 +426,7 @@ class OnlineMusicHomeFragment private constructor() : Fragment(), ServiceConnect
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun setUpSeekBar() {
         // val mediaPlayerManager = MediaPlayerManager.getInstance()
         mediaPlayerManager.mediaPlayer?.setOnPreparedListener {
@@ -508,16 +502,17 @@ class OnlineMusicHomeFragment private constructor() : Fragment(), ServiceConnect
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun updateActivityResumeData() {
+        var selectedPos = MyApplication.selectedPosition
         if (MyApplication.prevActivity.lowercase() == "PlayingMusicActivity".lowercase() || MyApplication.prevActivity.lowercase() == "MainActivity".lowercase()) {
             Log.d("Tag:From Main or PlayingMusic Activity", "hi")
             setMusicAdapterView()
             playerBottomLL.visibility = View.VISIBLE
-            selectedPos = MyApplication.selectedPosition
+
 
             if (selectedPos != -1) {
                 resumeMusicBottomUiSetUp(selectedPos)
                 mediaPlayerManager.mediaPlayer!!.setOnCompletionListener {
-                    playNextSong(selectedPos)
+                    playNextSong(++MyApplication.selectedPosition)
                 }
             }
         } else {
@@ -532,7 +527,7 @@ class OnlineMusicHomeFragment private constructor() : Fragment(), ServiceConnect
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun singleTimeExecutionBottomUi() {
         playerBottomLL.visibility = View.VISIBLE
-        selectedPos = MyApplication.selectedPosition
+        val selectedPos = MyApplication.selectedPosition
         songList = MyApplication.dataList
 //        val selectedSong = songList[selectedPos]
         //setUpSeekBar()
@@ -547,7 +542,7 @@ class OnlineMusicHomeFragment private constructor() : Fragment(), ServiceConnect
                 )
             }
             mediaPlayerManager.mediaPlayer?.setOnCompletionListener {
-                playNextSong(selectedPos)
+                playNextSong(++MyApplication.selectedPosition)
             }
         }
     }
@@ -593,6 +588,7 @@ class OnlineMusicHomeFragment private constructor() : Fragment(), ServiceConnect
     override fun onDestroy() {
         super.onDestroy()
         // mediaPlayer?.release()
+        releaseInstance()
         handler.removeCallbacksAndMessages(null)
 
     }

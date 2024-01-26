@@ -3,19 +3,13 @@ package com.example.cdmusicplayer.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import com.example.cdmusicplayer.R
@@ -27,9 +21,7 @@ import com.example.cdmusicplayer.utils.MusicService
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var navController: NavController
     private lateinit var binding: ActivityMainBinding
-
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {

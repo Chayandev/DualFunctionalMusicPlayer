@@ -51,7 +51,7 @@ class MusicService : Service() {
 
         if (selectedPosition >= 0 && selectedPosition < dataList.size) {
             val selectedSong = dataList[selectedPosition]
-            var bitMap: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.headphone)
+            var bitMap: Bitmap
 
             Picasso.get().load(selectedSong.album.cover_big)
                 .into(object : com.squareup.picasso.Target {
@@ -143,7 +143,7 @@ class MusicService : Service() {
 
         val exitIntent =
             Intent(baseContext, NotificationReceiver::class.java).setAction(MyApplication.EXIT)
-        val exitPendingIntent = PendingIntent.getBroadcast(
+        PendingIntent.getBroadcast(
             baseContext,
             0,
             exitIntent,

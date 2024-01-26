@@ -33,7 +33,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import androidx.fragment.app.FragmentManager
 import androidx.palette.graphics.Palette
 import com.example.cdmusicplayer.model.ApiData.Data
 import com.example.cdmusicplayer.utils.MediaPlayerManager
@@ -59,11 +58,13 @@ class PlayingMusicBottomSheetFragment private constructor() : BottomSheetDialogF
             }
             return instance!!
         }
+
+        fun releaseInstance() {
+            instance = null
+        }
     }
 
     private lateinit var binding: FragmentPlayingMusicBinding
-    private var selectedPosition: Int = -1
-    private lateinit var dataList: List<Data>
     private var isFav: Boolean = false
     private var handler: Handler = Handler(Looper.getMainLooper())
     private var mediaPlayerManager: MediaPlayerManager = MediaPlayerManager.getInstance()
@@ -135,21 +136,21 @@ class PlayingMusicBottomSheetFragment private constructor() : BottomSheetDialogF
 
         accessSharedData()
         binding.backwardBtn.setOnClickListener {
-            if (selectedPosition >= 0) {
-                changeMusicOnForward()
+            if (MyApplication.selectedPosition >= 0) {
+                changeMusicOnBackward(--MyApplication.selectedPosition)
             } else {
                 binding.backwardBtn.setImageResource(R.drawable.ic_go_previous_transparent)
             }
         }
         binding.forwardBtn.setOnClickListener {
-            if (selectedPosition < dataList.size - 1) {
-                changeMusicOnBackward()
+            if (MyApplication.selectedPosition < MyApplication.dataList.size - 1) {
+                changeMusicOnForward(++MyApplication.selectedPosition)
             } else {
                 binding.forwardBtn.setImageResource(R.drawable.ic_go_next_transparent)
             }
         }
         mediaPlayerManager.mediaPlayer!!.setOnCompletionListener {
-            playNewMusic(selectedPosition)
+            playNewMusic(MyApplication.selectedPosition)
         }
         MyApplication.prevActivity = "PlayingMusicActivity"
 
@@ -160,16 +161,14 @@ class PlayingMusicBottomSheetFragment private constructor() : BottomSheetDialogF
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    private fun changeMusicOnBackward() {
+ fun changeMusicOnBackward(i: Int) {
         mediaPlayerManager.releaseMediaPlayer()
-        MyApplication.selectedPosition += 1
         setNewSharedData()
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    private fun changeMusicOnForward() {
+   fun changeMusicOnForward(i: Int) {
         mediaPlayerManager.releaseMediaPlayer()
-        MyApplication.selectedPosition -= 1
         setNewSharedData()
     }
 
@@ -226,7 +225,7 @@ class PlayingMusicBottomSheetFragment private constructor() : BottomSheetDialogF
 
     @RequiresApi(Build.VERSION_CODES.Q)
     fun playNewMusic(currentPosition: Int) {
-        if (currentPosition >= 0 && currentPosition < dataList.size - 1) {
+        if (currentPosition >= 0 && currentPosition < MyApplication.dataList.size - 1) {
             mediaPlayerManager.releaseMediaPlayer()
             MyApplication.selectedPosition += 1
             setNewSharedData()
@@ -240,8 +239,8 @@ class PlayingMusicBottomSheetFragment private constructor() : BottomSheetDialogF
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun setNewSharedData() {
-        selectedPosition = MyApplication.selectedPosition
-        val selectedSong = dataList[selectedPosition]
+        val selectedPosition = MyApplication.selectedPosition
+        val selectedSong = MyApplication.dataList[selectedPosition]
         mediaPlayerManager.initializeMediaPlayer()
         mediaPlayerManager.mediaPlayer?.setDataSource(
             requireContext(),
@@ -257,20 +256,21 @@ class PlayingMusicBottomSheetFragment private constructor() : BottomSheetDialogF
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun setNewSeekBar() {
         binding.seekBar.max = mediaPlayerManager.mediaPlayer!!.duration
         binding.totalTime.text = convertDuration(mediaPlayerManager.mediaPlayer!!.duration.toLong())
         mediaPlayerManager.mediaPlayer?.start()
         musicService?.notificationUiUpdate()
         binding.playPaushBtn.setImageResource(R.drawable.ic_pause)
-        checkUserChangeListner()
+        checkUserChangeListener()
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun accessSharedData() {
         Log.d("accessSharedData", "Calling from AccessSharedData")
-        selectedPosition = MyApplication.selectedPosition
-        dataList = MyApplication.dataList
+        val selectedPosition = MyApplication.selectedPosition
+        val dataList = MyApplication.dataList
         if (selectedPosition != -1 && dataList.isNotEmpty()) {
             setUpUI(selectedPosition)
         }
@@ -281,11 +281,7 @@ class PlayingMusicBottomSheetFragment private constructor() : BottomSheetDialogF
 
     private fun setUpUI(selectedPosition: Int) {
         Log.d("setUp UI", "Setting UI")
-        val selectedSong = dataList[selectedPosition]
-        binding.songTitle.text = selectedSong.title
-        binding.songTitle.setHorizontallyScrolling(true)
-        binding.songTitle.isSelected = true
-        binding.singer.text = selectedSong.artist.name
+        val selectedSong = MyApplication.dataList[selectedPosition]
         Picasso.get().load(selectedSong.album.cover_big).into(object : Target {
             override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
                 bitmap.let { albumArtworkBitmap ->
@@ -310,12 +306,14 @@ class PlayingMusicBottomSheetFragment private constructor() : BottomSheetDialogF
                         binding.designBottomSheet.background = gradientDrawable
                         setStatusBarColor(dominantColor)
                         binding.musicImg.setImageBitmap(albumArtworkBitmap)
+                        setSongDetails(selectedSong)
                     }
                 }
             }
 
             override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
                 binding.musicImg.setImageResource(R.drawable.headphone)
+                setSongDetails(selectedSong)
             }
 
             override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
@@ -329,7 +327,7 @@ class PlayingMusicBottomSheetFragment private constructor() : BottomSheetDialogF
             binding.backwardBtn.setImageResource((R.drawable.ic_go_previous))
         }
 
-        if (selectedPosition == dataList.size - 1) {
+        if (selectedPosition == MyApplication.dataList.size - 1) {
             binding.forwardBtn.setImageResource(R.drawable.ic_go_next_transparent)
         } else {
             binding.forwardBtn.setImageResource(R.drawable.ic_go_next)
@@ -344,6 +342,17 @@ class PlayingMusicBottomSheetFragment private constructor() : BottomSheetDialogF
                 false
             }
         }
+    }
+
+    private fun setSongDetails(selectedSong: Data) {
+        Log.d("songB", "${binding.songTitle.text} diff ${selectedSong.title}")
+        binding.songTitle.text = selectedSong.title
+        Log.d("songA", "${binding.songTitle.text} diff ${selectedSong.title}")
+        binding.songTitle.setHorizontallyScrolling(true)
+        binding.songTitle.isSelected = true
+        Log.d("artistB", "${binding.singer.text} diff ${selectedSong.artist.name}")
+        binding.singer.text = selectedSong.artist.name
+        Log.d("artistA", "${binding.singer.text} diff ${selectedSong.artist.name}")
     }
 
     private fun setStatusBarColor(dominantColor: Int) {
@@ -362,14 +371,14 @@ class PlayingMusicBottomSheetFragment private constructor() : BottomSheetDialogF
             } else {
                 binding.playPaushBtn.setImageResource(R.drawable.ic_play)
             }
-            checkUserChangeListner()
+            checkUserChangeListener()
         } else {
             // Handle the case where mediaPlayer is null (initialize or show an error)
         }
     }
 
 
-    private fun checkUserChangeListner() {
+    private fun checkUserChangeListener() {
         binding.seekBar.setOnSeekBarChangeListener(object :
             android.widget.SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(
@@ -421,7 +430,7 @@ class PlayingMusicBottomSheetFragment private constructor() : BottomSheetDialogF
         }, 0)
         mediaPlayerManager.mediaPlayer?.setOnCompletionListener {
             playNewMusic(MyApplication.selectedPosition)
-            Log.d("MusicComplete", "setonCompleteListner")
+            Log.d("MusicComplete", "setonCompleteListener")
         }
     }
 
@@ -464,21 +473,18 @@ class PlayingMusicBottomSheetFragment private constructor() : BottomSheetDialogF
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onResume() {
         super.onResume()
-        Log.d("Resume BottomSheetFragment", "BottomSheetOnresume")
+        Log.d("Resume BottomSheetFragment", "BottomSheetOn resume")
         mediaPlayerManager.mediaPlayer?.setOnCompletionListener {
             playNewMusic(MyApplication.selectedPosition)
         }
 
     }
 
-    override fun show(manager: FragmentManager, tag: String?) {
-        super.show(manager, tag)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         // Release resources or perform cleanup if needed
         // Example: mediaPlayerManager.releaseMediaPlayer()
+        releaseInstance()
         handler.removeCallbacksAndMessages(null)
     }
 

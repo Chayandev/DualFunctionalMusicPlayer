@@ -8,7 +8,6 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.cdmusicplayer.ui.fragments.OnlineMusicHomeFragment
 import com.example.cdmusicplayer.ui.fragments.PlayingMusicBottomSheetFragment
-import kotlin.system.exitProcess
 
 
 class NotificationReceiver : BroadcastReceiver() {
@@ -35,40 +34,31 @@ class NotificationReceiver : BroadcastReceiver() {
     private fun updatePlayaPauseClick() {
         if (MediaPlayerManager.getInstance().mediaPlayer?.isPlaying == true) {
             OnlineMusicHomeFragment.getInstance().pauseMusic()
-            try {
-                PlayingMusicBottomSheetFragment.getInstance().pauseMusic()
-            } catch (e: Exception) {
-                Log.e("Exception", "Fragment is not created")
-            }
+
         } else {
             OnlineMusicHomeFragment.getInstance().resumeMusic()
-            try {
-                PlayingMusicBottomSheetFragment.getInstance().resumeMusic()
-            } catch (e: Exception) {
-                Log.e("Exception", "Fragment is not created")
-            }
+
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun updatePreviousClick() {
-        val currentPos = MyApplication.selectedPosition - 2
-        OnlineMusicHomeFragment.getInstance().playNextSong(currentPos)
-        try {
-            PlayingMusicBottomSheetFragment.getInstance().playNewMusic(currentPos)
-        } catch (e: Exception) {
-            Log.e("Exception", "Fragment is not created")
+        Log.d("NotificationReciver","current Position ${MyApplication.selectedPosition}")
+        val position=--MyApplication.selectedPosition
+        OnlineMusicHomeFragment.getInstance().playNextSong(position)
+        val playingMusicBottomSheetFragment=PlayingMusicBottomSheetFragment.getInstance()
+        if(playingMusicBottomSheetFragment.isAdded && playingMusicBottomSheetFragment.activity!=null){
+            playingMusicBottomSheetFragment.changeMusicOnBackward(position)
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun updateNextClick() {
-        OnlineMusicHomeFragment.getInstance().playNextSong(MyApplication.selectedPosition)
-        try {
-            PlayingMusicBottomSheetFragment.getInstance()
-                .playNewMusic(MyApplication.selectedPosition)
-        } catch (e: Exception) {
-            Log.e("Exception", "Fragment is not created")
+        val position=++MyApplication.selectedPosition
+        OnlineMusicHomeFragment.getInstance().playNextSong(position)
+        val playingMusicBottomSheetFragment=PlayingMusicBottomSheetFragment.getInstance()
+        if(playingMusicBottomSheetFragment.isAdded && playingMusicBottomSheetFragment.activity!=null){
+            playingMusicBottomSheetFragment.changeMusicOnForward(position)
         }
     }
 
