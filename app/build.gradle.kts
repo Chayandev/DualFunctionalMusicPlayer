@@ -86,5 +86,14 @@ dependencies {
     //pallet library
     implementation ("androidx.palette:palette-ktx:1.0.0")
 
+    //navigation
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.6")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
+    // Feature module Support
+    implementation("androidx.navigation:navigation-dynamic-features-fragment:2.7.6")
+
+
+    //glide image laoder
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
 
 }

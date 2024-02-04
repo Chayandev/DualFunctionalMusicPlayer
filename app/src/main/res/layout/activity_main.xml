@@ -34,8 +34,7 @@
         android:id="@+id/playerBottomLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -147,26 +146,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigation"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_gravity="bottom"
-        android:background="@android:color/transparent"
-        android:padding="0dp"
-        app:itemActiveIndicatorStyle="@style/BottomNavigationActiveIndicator"
-        app:itemIconSize="24dp"
-        app:itemIconTint="@color/white"
-        app:itemPaddingBottom="8dp"
-        android:layout_marginBottom="0dp"
-        app:itemPaddingTop="12dp"
-        app:itemTextAppearanceActiveBoldEnabled="true"
-        app:itemTextColor="@drawable/bottom_nav_item_text_color_selector"
-        app:labelVisibilityMode="labeled"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/nav_menu"
-        />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -37,6 +37,7 @@
                 android:id="@+id/artistImg"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:src="@drawable/headphone"
                 android:contentDescription="@string/artistpicture"
                 android:scaleType="centerCrop" />
 

@@ -4,23 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
     app:startDestination="@id/onlineMusicHomeFragment">
-
     <fragment
         android:id="@+id/onlineMusicHomeFragment"
         android:name="com.example.cdmusicplayer.ui.fragments.OnlineMusicHomeFragment"
         android:label="fragment_online_music_home"
         tools:layout="@layout/fragment_online_music_home" >
         <action
-            android:id="@+id/action_onlineMusicHomeFragment_to_offlineMusicHomeFragment"
-            app:destination="@id/offlineMusicHomeFragment" />
+            android:id="@+id/action_onlineMusicHomeFragment_to_playingMusicBottomSheetFragment"
+            app:destination="@id/playingMusicBottomSheetFragment" />
+        <action
+            android:id="@+id/action_onlineMusicHomeFragment_to_onlineMusicByUserChoice"
+            app:destination="@id/onlineMusicByUserChoice" />
+        <action
+            android:id="@+id/action_onlineMusicHomeFragment_to_playingMusicBottomSheetFragment2"
+            app:destination="@id/playingMusicBottomSheetFragment" />
     </fragment>
     <fragment
-        android:id="@+id/offlineMusicHomeFragment"
-        android:name="com.example.cdmusicplayer.ui.fragments.OfflineMusicHomeFragment"
-        android:label="fragment_offline_music_home"
-        tools:layout="@layout/fragment_offline_music_home" >
-        <action
-            android:id="@+id/action_offlineMusicHomeFragment_to_onlineMusicHomeFragment"
-            app:destination="@id/onlineMusicHomeFragment" />
-    </fragment>
+        android:id="@+id/onlineMusicByUserChoice"
+        android:name="com.example.cdmusicplayer.ui.fragments.OnlineMusicByUserChoice"
+        android:label="fragment_online_music_by_user_choice"
+        tools:layout="@layout/fragment_online_music_by_user_choice" />
+    <dialog
+        android:id="@+id/playingMusicBottomSheetFragment"
+        android:name="com.example.cdmusicplayer.ui.fragments.PlayingMusicBottomSheetFragment"
+        android:label="fragment_playing_music"
+        tools:layout="@layout/fragment_playing_music" />
 </navigation>

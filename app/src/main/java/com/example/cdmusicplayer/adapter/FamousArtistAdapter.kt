@@ -42,9 +42,9 @@ class FamousArtistAdapter(
         holder.artistName.text=gridItem.name
         Picasso.get().load(gridItem.picture).into(holder.picture)
 
-//        holder.itemView.setOnClickListener {
-//            onItemClick(position)
-//        }
+        holder.itemView.setOnClickListener {
+            onItemClick(position)
+        }
     }
 
 

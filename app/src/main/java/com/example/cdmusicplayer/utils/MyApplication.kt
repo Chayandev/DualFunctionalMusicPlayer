@@ -19,8 +19,11 @@ class MyApplication : Application() {
 
         var selectedPosition: Int = -1
         var dataList: List<Data> = emptyList()
-        var songFromWhichActivity:String="MainActivity"
-        var prevActivity:String="MainActivity"
+        var songFromWhichFragment:String="OnlineHome"
+        var prevFragment:String="OnlineHome"
+        var currFragment:String="OnlineHome"
+        var currentPlaylist:String=""
+        var previousPlaylist:String=""
     }
 
     override fun onCreate() {

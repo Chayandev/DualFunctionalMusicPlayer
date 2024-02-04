@@ -3,7 +3,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="primary">#202151</color>
     <color name="transparentPrimary">#D0202151</color>
-    <color name="gray">#CDCDCD</color>
+    <color name="gray">#E2E2E2</color>
     <color name="transhparent_gray">#8FCDCDCD</color>
     <color name="lightPrimary">#F33A3B54</color>
     <color name="secondary">#0c081c</color>
@@ -13,6 +13,7 @@
     <color name="transparent_uiBg">#0D0D0920</color>
     <color name="transparent5p_uiBg">#030D0920</color>
     <color name="transparent50p_uiBg">#990D0920</color>
+    <color name="trasparentLightUiBg">#737F40F4</color>
     <color name="upGrad_700">#3b56e5</color>
     <color name="downGrad_700">#864cf7</color>
     <color name="upGrad_500">#362068</color>

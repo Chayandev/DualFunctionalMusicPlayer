@@ -28,4 +28,16 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>
+
+    <style name="FabIconShape" parent="ShapeAppearanceOverlay.Material3.FloatingActionButton">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+        <item name="background">@drawable/pl_ps_btn</item>
+    </style>
+
+    <style name="expandedTextAppearance">
+        <item name="android:textSize">25sp</item>
+        <item name="android:fontFamily">@font/amarante</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

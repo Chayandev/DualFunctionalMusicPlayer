@@ -18,6 +18,7 @@ import com.example.cdmusicplayer.ui.fragments.OfflineMusicHomeFragment
 import com.example.cdmusicplayer.ui.fragments.OnlineMusicHomeFragment
 import com.example.cdmusicplayer.utils.MediaPlayerManager
 import com.example.cdmusicplayer.utils.MusicService
+import com.example.cdmusicplayer.utils.MyApplication
 
 
 class MainActivity : AppCompatActivity() {
@@ -31,13 +32,13 @@ class MainActivity : AppCompatActivity() {
         window.statusBarColor = ContextCompat.getColor(this, R.color.uiBg)
         setContentView(binding.root)
         replaceFragment(OnlineMusicHomeFragment.getInstance())
-        binding.bottomNavigation.setOnItemSelectedListener {
-            when (it.itemId) {
-                R.id.online_view -> replaceFragment(OnlineMusicHomeFragment.getInstance())
-                R.id.offline_view -> replaceFragment(OfflineMusicHomeFragment())
-            }
-            true
-        }
+//        binding.bottomNavigation.setOnItemSelectedListener {
+//            when (it.itemId) {
+//                R.id.online_view -> replaceFragment(OnlineMusicHomeFragment.getInstance())
+//                R.id.offline_view -> replaceFragment(OfflineMusicHomeFragment())
+//            }
+//            true
+//        }
         // Apply system UI flags and window insets handling
         WindowCompat.getInsetsController(window, window.decorView).apply {
             isAppearanceLightStatusBars = false
@@ -48,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 
 
     @SuppressLint("CommitTransaction")
-    private fun replaceFragment(fragment: Fragment) {
+   fun replaceFragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragmentContainer, fragment)
@@ -62,6 +63,5 @@ class MainActivity : AppCompatActivity() {
         // Use the reference to the existing MusicService instance
         val musicServiceIntent = Intent(this, MusicService::class.java)
         stopService(musicServiceIntent)
-
     }
 }

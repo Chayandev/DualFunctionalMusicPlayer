@@ -40,6 +40,7 @@ import com.example.cdmusicplayer.utils.MyApplication
 import com.example.cdmusicplayer.R
 import com.example.cdmusicplayer.databinding.FragmentPlayingMusicBinding
 import com.example.cdmusicplayer.utils.MusicService
+import com.example.cdmusicplayer.utils.statusBarColorChangeUtil
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -73,6 +74,7 @@ class PlayingMusicBottomSheetFragment private constructor() : BottomSheetDialogF
     private lateinit var dialog: BottomSheetDialog
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     var bottomSheet: FrameLayout? = null
+    private val fragmentTag="PlayingMusicFragment"
 
     // Function to set the listener
     fun onSetListener(listener: BottomSheetDismissListener) {
@@ -110,6 +112,7 @@ class PlayingMusicBottomSheetFragment private constructor() : BottomSheetDialogF
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        MyApplication.currFragment=fragmentTag
         val intent = Intent(requireContext(), MusicService::class.java)
         requireActivity().bindService(
             intent,
@@ -152,12 +155,11 @@ class PlayingMusicBottomSheetFragment private constructor() : BottomSheetDialogF
         mediaPlayerManager.mediaPlayer!!.setOnCompletionListener {
             playNewMusic(MyApplication.selectedPosition)
         }
-        MyApplication.prevActivity = "PlayingMusicActivity"
 
         binding.dropDownBtn.setOnClickListener {
             dismissWithSlidingAnimation(bottomSheet)
         }
-        setUpOnBackPress()
+     //   setUpOnBackPress()
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -196,26 +198,34 @@ class PlayingMusicBottomSheetFragment private constructor() : BottomSheetDialogF
             View.TRANSLATION_Y,
             bottomSheet?.height?.toFloat() ?: 0F
         )
-        setStatusBarColor(Color.TRANSPARENT)
+        statusBarColorChangeUtil.setStatusBarColor(Color.TRANSPARENT,requireActivity())
         translationAnimator.apply {
             duration = 100
             addListener(object : AnimatorListenerAdapter() {
+                @RequiresApi(Build.VERSION_CODES.Q)
                 override fun onAnimationEnd(animation: Animator) {
                     super.onAnimationEnd(animation)
                     dismiss()
+                    bottomSheetDismissListener?.onBottomSheetDismissed()
+                    OnlineMusicHomeFragment.getInstance().applyChangesOnResume()
+                    // Remove the fragment transaction to destroy the fragment
+                    parentFragmentManager.beginTransaction().remove(this@PlayingMusicBottomSheetFragment).commit()
+                    handler.removeCallbacksAndMessages(null)
                 }
             })
         }
             .start()
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onDismiss(dialog: DialogInterface) {
         Log.d("OnDismiss", "Override OnDismiss")
-        setStatusBarColor(Color.TRANSPARENT)
+        statusBarColorChangeUtil.setStatusBarColor(Color.TRANSPARENT,requireActivity())
         // Delay the execution by 3 seconds
         handler.postDelayed({
             super.onDismiss(dialog)
             bottomSheetDismissListener?.onBottomSheetDismissed()
+            OnlineMusicHomeFragment.getInstance().applyChangesOnResume()
             // Remove the fragment transaction to destroy the fragment
             parentFragmentManager.beginTransaction().remove(this).commit()
             handler.removeCallbacksAndMessages(null)
@@ -304,7 +314,7 @@ class PlayingMusicBottomSheetFragment private constructor() : BottomSheetDialogF
                         gradientDrawable.colors = intArrayOf(defaultColor, dominantColor)
                         gradientDrawable.shape = GradientDrawable.RECTANGLE
                         binding.designBottomSheet.background = gradientDrawable
-                        setStatusBarColor(dominantColor)
+                        statusBarColorChangeUtil.setStatusBarColor(dominantColor,requireActivity())
                         binding.musicImg.setImageBitmap(albumArtworkBitmap)
                         setSongDetails(selectedSong)
                     }
@@ -355,11 +365,7 @@ class PlayingMusicBottomSheetFragment private constructor() : BottomSheetDialogF
         Log.d("artistA", "${binding.singer.text} diff ${selectedSong.artist.name}")
     }
 
-    private fun setStatusBarColor(dominantColor: Int) {
-        activity?.let {
-            it.window.statusBarColor = dominantColor
-        }
-    }
+
 
     private fun setUpSeekBar() {
         if (mediaPlayerManager.mediaPlayer != null) {
@@ -484,8 +490,10 @@ class PlayingMusicBottomSheetFragment private constructor() : BottomSheetDialogF
         super.onDestroy()
         // Release resources or perform cleanup if needed
         // Example: mediaPlayerManager.releaseMediaPlayer()
+        MyApplication.prevFragment=fragmentTag
         releaseInstance()
         handler.removeCallbacksAndMessages(null)
+        Log.d("destroy","BottomSheetDestroy")
     }
 
     interface BottomSheetDismissListener {
