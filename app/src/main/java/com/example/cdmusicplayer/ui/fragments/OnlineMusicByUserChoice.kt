@@ -133,7 +133,7 @@ class OnlineMusicByUserChoice private constructor() : Fragment(),PlayingMusicBot
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun setUpPlayPause() {
-        if (MyApplication.currentPlaylist.lowercase() != MyApplication.previousPlaylist.lowercase()) {
+        if (MyApplication.songFromWhichFragment.lowercase()!=fragmentTag) {
             setAndPlayMusic(dataList, 0)
             Log.d("if", "in")
         } else {
@@ -290,10 +290,12 @@ class OnlineMusicByUserChoice private constructor() : Fragment(),PlayingMusicBot
     }
 
     fun setPauseBtn() {
+        if(MyApplication.currentPlaylist.lowercase()==playlistName.lowercase())
         binding.playPauseBtn.setImageResource(R.drawable.ic_play)
     }
 
     fun setResumeBtn() {
+        if(MyApplication.currentPlaylist.lowercase()==playlistName.lowercase())
         binding.playPauseBtn.setImageResource(R.drawable.ic_pause)
     }
 
